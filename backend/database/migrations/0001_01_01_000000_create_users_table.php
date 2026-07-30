@@ -19,13 +19,16 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('client');
-            $table->string('telephone')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('adresse')->nullable();
+            $table->string('numero_permis')->nullable();
+            $table->date('date_expiration_permis')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
     
    
-
+   
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
