@@ -16,13 +16,23 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-    
-    protected $fillable = ['name', 'email', 'password', 'role', 'telephone'];
+
+    protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'adresse', 'numero_permis', 'date_expiration_permis'];
 
 public function reservations()
 {
     return $this->hasMany(Reservation::class);
 }
+
+public function favorites()
+{
+    return $this->hasMany(Favorite::class);
+}
+
+
+
+    
+
 
 
     /**
