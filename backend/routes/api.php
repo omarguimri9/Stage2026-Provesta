@@ -6,6 +6,8 @@ use App\Http\Controllers\VehiculeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\VehicleImageController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -15,3 +17,5 @@ Route::apiResource('vehicules', VehiculeController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('agencies', AgencyController::class);
 Route::apiResource('reservations', ReservationController::class);
+Route::apiResource('favorites', FavoriteController::class)->only(['index', 'store', 'destroy']);
+Route::apiResource('vehicle-images', VehicleImageController::class)->only(['store', 'destroy']);
