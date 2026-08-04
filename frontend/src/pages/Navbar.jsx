@@ -13,6 +13,7 @@ function Navbar() {
     return (
         <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '15px 30px', borderBottom: '1px solid #444' }}>
             <Link to="/vehicules" style={{ fontWeight: 'bold', fontSize: '18px' }}>🚗 Location Voitures</Link>
+            {user && <Link to="/mes-reservations" style={{ marginLeft: '20px' }}>Mes Réservations</Link>}
             <div>
                 {user ? (
                     <>
