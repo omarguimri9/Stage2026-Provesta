@@ -1,3 +1,4 @@
+import './App.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './pages/Navbar';
 import Login from './pages/Login';
