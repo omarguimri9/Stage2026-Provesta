@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Vehicules from './pages/Vehicules';
 import VehiculeDetails from './pages/VehiculeDetails';
 import MesReservations from './pages/MesReservations';
+import AdminDashboard from './pages/AdminDashboard';
 function App() {
   return (
     <>
@@ -17,6 +18,7 @@ function App() {
         <Route path="/vehicules" element={<Vehicules />} />
         <Route path="/vehicules/:id" element={<VehiculeDetails />} />
         <Route path="/mes-reservations" element={<MesReservations />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </>
   );
