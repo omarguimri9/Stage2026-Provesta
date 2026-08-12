@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\VehicleImage;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreVehicleImageRequest;
 
 class VehicleImageController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreVehicleImageRequest $request)
     {
-        $validated = $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'image_path' => 'required|string',
-            'is_principale' => 'boolean',
-        ]);
-
-        $image = VehicleImage::create($validated);
+        $image = VehicleImage::create($request->validated());
         return response()->json($image, 201);
     }
 
