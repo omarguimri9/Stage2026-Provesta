@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicule;
-use Illuminate\Http\Request;
+use App\Http\Requests\VehiculeRequest;
 
 class VehiculeController extends Controller
 {
@@ -15,21 +15,9 @@ class VehiculeController extends Controller
     }
 
     // Ajoute un nouveau véhicule
-    public function store(Request $request)
+    public function store(VehiculeRequest $request)
     {
-        $validated = $request->validate([
-            'marque' => 'required|string',
-            'modele' => 'required|string',
-            'annee' => 'required|integer',
-            'immatriculation' => 'required|string|unique:vehicles',
-            'prix_par_jour' => 'required|numeric',
-            'carburant' => 'required|string',
-            'transmission' => 'required|string',
-            'categorie_id' => 'required|exists:categories,id',
-            'agency_id' => 'required|exists:agencies,id',
-        ]);
-
-        $vehicule = Vehicule::create($validated);
+        $vehicule = Vehicule::create($request->validated());
         return response()->json($vehicule, 201);
     }
 
@@ -40,17 +28,9 @@ class VehiculeController extends Controller
     }
 
     // Modifie un véhicule
-    public function update(Request $request, Vehicule $vehicule)
+    public function update(VehiculeRequest $request, Vehicule $vehicule)
     {
-        $validated = $request->validate([
-            'marque' => 'sometimes|string',
-            'modele' => 'sometimes|string',
-            'annee' => 'sometimes|integer',
-            'prix_par_jour' => 'sometimes|numeric',
-            'disponible' => 'sometimes|boolean',
-        ]);
-
-        $vehicule->update($validated);
+        $vehicule->update($request->validated());
         return response()->json($vehicule);
     }
 
