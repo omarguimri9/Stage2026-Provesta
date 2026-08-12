@@ -43,6 +43,22 @@ function AdminDashboard() {
         }
     };
 
+    const handleStatutChange = async (id, statut) => {
+        try {
+            await api.put(`/reservations/${id}`, { statut });
+            loadData();
+        } catch (err) {
+            alert('Erreur lors de la mise à jour');
+        }
+    };
+
+    const statutColor = {
+        en_attente: '#f39c12',
+        confirmee: '#27ae60',
+        annulee: '#e74c3c',
+        terminee: '#7f8c8d',
+    };
+
     return (
         <div style={{ maxWidth: '1000px', margin: '30px auto' }}>
             <h2>Dashboard Admin</h2>
@@ -62,6 +78,7 @@ function AdminDashboard() {
                 </div>
             </div>
 
+            {/* SECTION VEHICULES */}
             <button onClick={() => setShowForm(!showForm)}>
                 {showForm ? 'Annuler' : '+ Ajouter un véhicule'}
             </button>
@@ -99,6 +116,40 @@ function AdminDashboard() {
                             <td style={{ padding: '8px' }}>{v.disponible ? 'Disponible' : 'Indisponible'}</td>
                             <td style={{ padding: '8px' }}>
                                 <button onClick={() => handleDelete(v.id)} style={{ backgroundColor: '#e74c3c' }}>Supprimer</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            {/* SECTION RESERVATIONS - JDIDA */}
+            <h3 style={{ marginTop: '40px' }}>Gestion des Réservations</h3>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                <thead>
+                    <tr style={{ borderBottom: '1px solid #444' }}>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Client</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Véhicule</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Dates</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Montant</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Statut</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {reservations.map((r) => (
+                        <tr key={r.id} style={{ borderBottom: '1px solid #333' }}>
+                            <td style={{ padding: '8px' }}>{r.user?.name}</td>
+                            <td style={{ padding: '8px' }}>{r.vehicule?.marque} {r.vehicule?.modele}</td>
+                            <td style={{ padding: '8px' }}>{r.date_debut} → {r.date_fin}</td>
+                            <td style={{ padding: '8px' }}>{r.montant_total} DT</td>
+                            <td style={{ padding: '8px', color: statutColor[r.statut] }}>{r.statut}</td>
+                            <td style={{ padding: '8px' }}>
+                                <select value={r.statut} onChange={(e) => handleStatutChange(r.id, e.target.value)}>
+                                    <option value="en_attente">En attente</option>
+                                    <option value="confirmee">Confirmée</option>
+                                    <option value="annulee">Annulée</option>
+                                    <option value="terminee">Terminée</option>
+                                </select>
                             </td>
                         </tr>
                     ))}
