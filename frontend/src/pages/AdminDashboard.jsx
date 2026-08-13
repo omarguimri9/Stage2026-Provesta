@@ -5,6 +5,7 @@ function AdminDashboard() {
     const [vehicules, setVehicules] = useState([]);
     const [reservations, setReservations] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [form, setForm] = useState({
         marque: '', modele: '', annee: '', immatriculation: '',
         prix_par_jour: '', carburant: '', transmission: '',
@@ -24,16 +25,36 @@ function AdminDashboard() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    const resetForm = () => {
+        setForm({ marque: '', modele: '', annee: '', immatriculation: '', prix_par_jour: '', carburant: '', transmission: '', categorie_id: 1, agency_id: 1 });
+        setEditingId(null);
+        setShowForm(false);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/vehicules', form);
-            setShowForm(false);
-            setForm({ marque: '', modele: '', annee: '', immatriculation: '', prix_par_jour: '', carburant: '', transmission: '', categorie_id: 1, agency_id: 1 });
+            if (editingId) {
+                await api.put(`/vehicules/${editingId}`, form);
+            } else {
+                await api.post('/vehicules', form);
+            }
+            resetForm();
             loadData();
         } catch (err) {
-            alert('Erreur lors de l\'ajout: ' + JSON.stringify(err.response?.data?.errors));
+            alert('Erreur: ' + JSON.stringify(err.response?.data?.errors));
         }
+    };
+
+    const handleEdit = (v) => {
+        setForm({
+            marque: v.marque, modele: v.modele, annee: v.annee,
+            immatriculation: v.immatriculation, prix_par_jour: v.prix_par_jour,
+            carburant: v.carburant, transmission: v.transmission,
+            categorie_id: v.categorie_id || 1, agency_id: v.agency_id || 1,
+        });
+        setEditingId(v.id);
+        setShowForm(true);
     };
 
     const handleDelete = async (id) => {
@@ -78,13 +99,13 @@ function AdminDashboard() {
                 </div>
             </div>
 
-            {/* SECTION VEHICULES */}
-            <button onClick={() => setShowForm(!showForm)}>
+            <button onClick={() => { if (showForm) resetForm(); else setShowForm(true); }}>
                 {showForm ? 'Annuler' : '+ Ajouter un véhicule'}
             </button>
 
             {showForm && (
                 <form onSubmit={handleSubmit} style={{ margin: '20px 0', padding: '20px', border: '1px solid #444', borderRadius: '8px' }}>
+                    <h4>{editingId ? 'Modifier le véhicule' : 'Nouveau véhicule'}</h4>
                     <div><label>Marque</label><input name="marque" value={form.marque} onChange={handleChange} required /></div>
                     <div><label>Modèle</label><input name="modele" value={form.modele} onChange={handleChange} required /></div>
                     <div><label>Année</label><input name="annee" type="number" value={form.annee} onChange={handleChange} required /></div>
@@ -92,7 +113,7 @@ function AdminDashboard() {
                     <div><label>Prix/jour</label><input name="prix_par_jour" type="number" value={form.prix_par_jour} onChange={handleChange} required /></div>
                     <div><label>Carburant</label><input name="carburant" value={form.carburant} onChange={handleChange} required /></div>
                     <div><label>Transmission</label><input name="transmission" value={form.transmission} onChange={handleChange} required /></div>
-                    <button type="submit">Enregistrer</button>
+                    <button type="submit">{editingId ? 'Mettre à jour' : 'Enregistrer'}</button>
                 </form>
             )}
 
@@ -115,6 +136,7 @@ function AdminDashboard() {
                             <td style={{ padding: '8px' }}>{v.prix_par_jour} DT</td>
                             <td style={{ padding: '8px' }}>{v.disponible ? 'Disponible' : 'Indisponible'}</td>
                             <td style={{ padding: '8px' }}>
+                                <button onClick={() => handleEdit(v)} style={{ marginRight: '8px' }}>Modifier</button>
                                 <button onClick={() => handleDelete(v.id)} style={{ backgroundColor: '#e74c3c' }}>Supprimer</button>
                             </td>
                         </tr>
@@ -122,7 +144,6 @@ function AdminDashboard() {
                 </tbody>
             </table>
 
-            {/* SECTION RESERVATIONS - JDIDA */}
             <h3 style={{ marginTop: '40px' }}>Gestion des Réservations</h3>
             <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
                 <thead>
