@@ -4,6 +4,7 @@ import api from '../services/api';
 function AdminDashboard() {
     const [vehicules, setVehicules] = useState([]);
     const [reservations, setReservations] = useState([]);
+    const [users, setUsers] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [form, setForm] = useState({
@@ -15,6 +16,7 @@ function AdminDashboard() {
     const loadData = () => {
         api.get('/vehicules').then((res) => setVehicules(res.data));
         api.get('/reservations').then((res) => setReservations(res.data));
+        api.get('/users').then((res) => setUsers(res.data));
     };
 
     useEffect(() => {
@@ -23,6 +25,13 @@ function AdminDashboard() {
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (window.confirm('Supprimer ce client ?')) {
+            await api.delete(`/users/${id}`);
+            loadData();
+        }
     };
 
     const resetForm = () => {
@@ -171,6 +180,32 @@ function AdminDashboard() {
                                     <option value="annulee">Annulée</option>
                                     <option value="terminee">Terminée</option>
                                 </select>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h3 style={{ marginTop: '40px' }}>Gestion des Clients</h3>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                <thead>
+                    <tr style={{ borderBottom: '1px solid #444' }}>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Nom</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Email</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Téléphone</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Réservations</th>
+                        <th style={{ textAlign: 'left', padding: '8px' }}>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map((u) => (
+                        <tr key={u.id} style={{ borderBottom: '1px solid #333' }}>
+                            <td style={{ padding: '8px' }}>{u.name}</td>
+                            <td style={{ padding: '8px' }}>{u.email}</td>
+                            <td style={{ padding: '8px' }}>{u.phone || '-'}</td>
+                            <td style={{ padding: '8px' }}>{u.reservations_count}</td>
+                            <td style={{ padding: '8px' }}>
+                                <button onClick={() => handleDeleteUser(u.id)} style={{ backgroundColor: '#e74c3c' }}>Supprimer</button>
                             </td>
                         </tr>
                     ))}

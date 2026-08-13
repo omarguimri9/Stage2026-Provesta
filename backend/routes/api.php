@@ -9,6 +9,7 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\VehicleImageController;
+use App\Http\Controllers\UserController;
 
 // Routes publiques (pas besoin de connexion)
 Route::post('/register', [AuthController::class, 'register']);
@@ -39,4 +40,6 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('categories', CategoryController::class)->except(['index']);
     Route::apiResource('agencies', AgencyController::class)->except(['index']);
     Route::apiResource('vehicle-images', VehicleImageController::class)->only(['store', 'destroy']);
+    Route::get('/users', [UserController::class, 'index']);
+Route::delete('/users/{user}', [UserController::class, 'destroy']);
 });
