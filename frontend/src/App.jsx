@@ -7,6 +7,7 @@ import Vehicules from './pages/Vehicules';
 import VehiculeDetails from './pages/VehiculeDetails';
 import MesReservations from './pages/MesReservations';
 import AdminDashboard from './pages/AdminDashboard';
+import MesFavoris from './pages/MesFavoris';
 function App() {
   return (
     <>
@@ -19,6 +20,7 @@ function App() {
         <Route path="/vehicules/:id" element={<VehiculeDetails />} />
         <Route path="/mes-reservations" element={<MesReservations />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/mes-favoris" element={<MesFavoris />} />
       </Routes>
     </>
   );

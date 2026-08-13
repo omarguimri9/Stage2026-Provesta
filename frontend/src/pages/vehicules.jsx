@@ -4,22 +4,52 @@ import api from '../services/api';
 
 function Vehicules() {
     const [vehicules, setVehicules] = useState([]);
+    const [favoris, setFavoris] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [maxPrix, setMaxPrix] = useState('');
     const [disponibleOnly, setDisponibleOnly] = useState(false);
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const loadData = () => {
+        api.get('/vehicules').then((res) => {
+            setVehicules(res.data);
+            setLoading(false);
+        });
+        if (user) {
+            api.get('/favorites').then((res) => setFavoris(res.data));
+        }
+    };
 
     useEffect(() => {
-        api.get('/vehicules')
-            .then((response) => {
-                setVehicules(response.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                setLoading(false);
-            });
+        loadData();
     }, []);
+
+    const isFavori = (vehiculeId) => favoris.some((f) => f.vehicle_id === vehiculeId);
+
+    const toggleFavori = async (e, vehiculeId) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!user) {
+            alert('Connectez-vous pour ajouter aux favoris');
+            return;
+        }
+
+        try {
+            const favori = favoris.find((f) => f.vehicle_id === vehiculeId);
+
+            if (favori) {
+                await api.delete(`/favorites/${favori.id}`);
+                setFavoris(favoris.filter((f) => f.id !== favori.id));
+            } else {
+                const response = await api.post('/favorites', { user_id: user.id, vehicle_id: vehiculeId });
+                setFavoris([...favoris, response.data]);
+            }
+        } catch (err) {
+            alert('Erreur: ' + JSON.stringify(err.response?.data));
+        }
+    };
 
     const filtered = vehicules.filter((v) => {
         const matchSearch = `${v.marque} ${v.modele}`.toLowerCase().includes(search.toLowerCase());
@@ -64,14 +94,28 @@ function Vehicules() {
             ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
                     {filtered.map((v) => (
-                        <Link key={v.id} to={`/vehicules/${v.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <div style={{ border: '1px solid #444', padding: '15px', borderRadius: '8px', cursor: 'pointer' }}>
-                                <h3>{v.marque} {v.modele}</h3>
-                                <p>Année: {v.annee}</p>
-                                <p>Prix/jour: {v.prix_par_jour} DT</p>
-                                <p>{v.disponible ? 'Disponible ✅' : 'Non disponible ❌'}</p>
-                            </div>
-                        </Link>
+                        <div key={v.id} style={{ position: 'relative' }}>
+                            {user && (
+                                <button
+                                    onClick={(e) => toggleFavori(e, v.id)}
+                                    style={{
+                                        position: 'absolute', top: '10px', right: '10px', zIndex: 1,
+                                        background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer',
+                                        padding: 0,
+                                    }}
+                                >
+                                    {isFavori(v.id) ? '❤️' : '🤍'}
+                                </button>
+                            )}
+                            <Link to={`/vehicules/${v.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <div style={{ border: '1px solid #444', padding: '15px', borderRadius: '8px', cursor: 'pointer' }}>
+                                    <h3>{v.marque} {v.modele}</h3>
+                                    <p>Année: {v.annee}</p>
+                                    <p>Prix/jour: {v.prix_par_jour} DT</p>
+                                    <p>{v.disponible ? 'Disponible ✅' : 'Non disponible ❌'}</p>
+                                </div>
+                            </Link>
+                        </div>
                     ))}
                 </div>
             )}

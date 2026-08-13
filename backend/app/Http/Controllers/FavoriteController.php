@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
-    public function index(Request $request)
-    {
-        $favorites = Favorite::with('vehicule')
-            ->where('user_id', $request->user_id)
-            ->get();
-        return response()->json($favorites);
-    }
+   public function index(Request $request)
+   {
+       $favorites = Favorite::with('vehicule')
+           ->where('user_id', $request->user()->id)
+           ->get();
+       return response()->json($favorites);
+   }
 
     public function store(Request $request)
     {
