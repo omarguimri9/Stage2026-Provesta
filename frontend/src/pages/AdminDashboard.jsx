@@ -7,6 +7,7 @@ function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [imageForm, setImageForm] = useState({ vehicle_id: '', image_path: '' });
     const [form, setForm] = useState({
         marque: '', modele: '', annee: '', immatriculation: '',
         prix_par_jour: '', carburant: '', transmission: '',
@@ -31,6 +32,17 @@ function AdminDashboard() {
         if (window.confirm('Supprimer ce client ?')) {
             await api.delete(`/users/${id}`);
             loadData();
+        }
+    };
+    const handleAddImage = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('/vehicle-images', imageForm);
+            setImageForm({ vehicle_id: '', image_path: '' });
+            loadData();
+            alert('Image ajoutée avec succès');
+        } catch (err) {
+            alert('Erreur lors de l\'ajout de l\'image');
         }
     };
 
@@ -211,6 +223,33 @@ function AdminDashboard() {
                     ))}
                 </tbody>
             </table>
+            <h3 style={{ marginTop: '40px' }}>Ajouter une Image à un Véhicule</h3>
+            <form onSubmit={handleAddImage} style={{ padding: '20px', border: '1px solid #444', borderRadius: '8px', marginTop: '10px' }}>
+                <div>
+                    <label>Véhicule</label>
+                    <select
+                        value={imageForm.vehicle_id}
+                        onChange={(e) => setImageForm({ ...imageForm, vehicle_id: e.target.value })}
+                        required
+                    >
+                        <option value="">-- Choisir un véhicule --</option>
+                        {vehicules.map((v) => (
+                            <option key={v.id} value={v.id}>{v.marque} {v.modele}</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label>URL de l'image</label>
+                    <input
+                        type="text"
+                        placeholder="https://exemple.com/image.jpg"
+                        value={imageForm.image_path}
+                        onChange={(e) => setImageForm({ ...imageForm, image_path: e.target.value })}
+                        required
+                    />
+                </div>
+                <button type="submit">Ajouter l'image</button>
+            </form>
         </div>
     );
 }

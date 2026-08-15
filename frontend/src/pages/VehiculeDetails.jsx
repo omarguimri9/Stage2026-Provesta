@@ -49,6 +49,18 @@ function VehiculeDetails() {
             <p>Places: {vehicule.nombre_places}</p>
             <p>Kilométrage: {vehicule.kilometrage} km</p>
             <p>Description: {vehicule.description}</p>
+            {vehicule.images && vehicule.images.length > 0 && (
+                <div style={{ display: 'flex', gap: '10px', marginTop: '15px', flexWrap: 'wrap' }}>
+                    {vehicule.images.map((img) => (
+                        <img
+                            key={img.id}
+                            src={img.image_path}
+                            alt="véhicule"
+                            style={{ width: '150px', height: '100px', objectFit: 'cover', borderRadius: '8px' }}
+                        />
+                    ))}
+                </div>
+            )}
             <p><strong>Prix/jour: {vehicule.prix_par_jour} DT</strong></p>
 
             <hr />
