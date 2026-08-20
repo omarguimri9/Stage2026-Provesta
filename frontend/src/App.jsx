@@ -8,6 +8,7 @@ import VehiculeDetails from './pages/VehiculeDetails';
 import MesReservations from './pages/MesReservations';
 import MesFavoris from './pages/MesFavoris';
 import AdminDashboard from './pages/AdminDashboard';
+import Agences from './pages/Agences';
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -29,6 +30,7 @@ function App() {
         <Route path="/mes-reservations" element={<MesReservations />} />
         <Route path="/mes-favoris" element={<MesFavoris />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/agences" element={<Agences />} />
       </Routes>
     </>
   );

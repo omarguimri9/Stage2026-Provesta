@@ -14,6 +14,7 @@ function Navbar({ darkMode, setDarkMode }) {
         <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '15px 30px', borderBottom: '1px solid #444' }}>
             <div>
                 <Link to="/vehicules" style={{ fontWeight: 'bold', fontSize: '18px' }}>🚗 Location Voitures</Link>
+                <Link to="/agences" style={{ marginLeft: '20px' }}>Nos Agences</Link>
                 {user && <Link to="/mes-reservations" style={{ marginLeft: '20px' }}>Mes Réservations</Link>}
                 {user && <Link to="/mes-favoris" style={{ marginLeft: '20px' }}>Mes Favoris</Link>}
                 {user && user.role === 'admin' && <Link to="/admin" style={{ marginLeft: '20px' }}>Dashboard</Link>}
